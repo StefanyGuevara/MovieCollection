@@ -21,8 +21,8 @@ namespace MovieCollection.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Category")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Director")
                         .HasColumnType("TEXT");
@@ -38,22 +38,24 @@ namespace MovieCollection.Migrations
 
                     b.HasKey("ApplicationId");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("responses");
 
                     b.HasData(
                         new
                         {
                             ApplicationId = 1,
-                            Category = "Comedy",
-                            Director = "Chuck Russell",
+                            CategoryId = 1,
+                            Director = "Damien Russell",
                             Rating = "PG-13",
-                            Title = "The Mask",
-                            Year = 1994
+                            Title = "La La Land",
+                            Year = 2016
                         },
                         new
                         {
                             ApplicationId = 2,
-                            Category = "Comedy",
+                            CategoryId = 2,
                             Director = "Adam Shankman",
                             Rating = "PG-13",
                             Title = "The Wedding Planner",
@@ -62,12 +64,52 @@ namespace MovieCollection.Migrations
                         new
                         {
                             ApplicationId = 3,
-                            Category = "Family",
+                            CategoryId = 3,
                             Director = "Kevin Lima",
                             Rating = "PG",
                             Title = "Enchanted",
                             Year = 2007
                         });
+                });
+
+            modelBuilder.Entity("MovieCollection.Models.Category", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CategoryId");
+
+                    b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryId = 1,
+                            CategoryName = "Drama"
+                        },
+                        new
+                        {
+                            CategoryId = 2,
+                            CategoryName = "Comedy"
+                        },
+                        new
+                        {
+                            CategoryId = 3,
+                            CategoryName = "Family"
+                        });
+                });
+
+            modelBuilder.Entity("MovieCollection.Models.ApplicationInfo", b =>
+                {
+                    b.HasOne("MovieCollection.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
